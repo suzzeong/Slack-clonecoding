@@ -1,4 +1,5 @@
 import useInput from '@hooks/useInput';
+import axios from 'axios';
 import React, { useState, useCallback } from 'react';
 import { Form, Label, Input, LinkContainer, Button, Header, Error, Success } from './styles';
 
@@ -8,6 +9,7 @@ const SignUp = () => {
   const [password, setPassword] = useState('');
   const [passwordCheck, setPasswordCheck] = useState('');
   const [mismatchError, setMismatchError] = useState(false);
+
   const [signUpError, setSignUpError] = useState('');
   const [signUpSuccess, setSignUpSuccess] = useState(false);
 
@@ -28,11 +30,25 @@ const SignUp = () => {
   const onSubmit = useCallback(
     (e) => {
       e.preventDefault();
-      console.log(email, nickname, password, passwordCheck);
       if (!mismatchError && nickname) {
-        console.log('서버로 회원가입하기');
+        // console.log('서버로 회원가입하기');
         setSignUpError('');
         setSignUpSuccess(false);
+        axios
+          .post('http://localhost:3090/api/users', {
+            email,
+            nickname,
+            password,
+          })
+          .then((response) => {
+            console.log(response);
+            setSignUpSuccess(true);
+          })
+          .catch((error) => {
+            console.log(error.response);
+            setSignUpError(error.response.data);
+          })
+          .finally(() => {});
       }
     },
     [email, nickname, password, passwordCheck],

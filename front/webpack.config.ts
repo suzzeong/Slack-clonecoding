@@ -81,6 +81,7 @@ const config: Configuration = {
     port: 3090,
     devMiddleware: { publicPath: '/dist/' },
     static: { directory: path.resolve(__dirname) },
+    // 프록시 설정 (CORS 에러)
     proxy: {
       '/api/': {
         target: 'http://localhost:3095',
