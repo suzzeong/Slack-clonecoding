@@ -3,8 +3,11 @@ import { Success, Form, Error, Label, Input, LinkContainer, Button, Header } fro
 import useInput from '@hooks/useInput';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import useSWR from 'swr';
+import fetcher from '@utils/fetcher';
 
 const LogIn = () => {
+  const{data, error} = useSWR('http://localhost:3095/api/users', fetcher)
   const [logInError, setLogInError] = useState(false);
   const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
@@ -13,7 +16,7 @@ const LogIn = () => {
       e.preventDefault();
       axios
         .post(
-          '/api/users/login',
+          'http://localhost:3095/api/users/login',
           { email, password },
           {
             withCredentials: true,
