@@ -1,13 +1,13 @@
 import React, { useCallback, useState } from 'react';
 import { Success, Form, Error, Label, Input, LinkContainer, Button, Header } from '@pages/SignUp/styles';
 import useInput from '@hooks/useInput';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import axios from 'axios';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
 
 const LogIn = () => {
-  const{data, error} = useSWR('http://localhost:3095/api/users', fetcher)
+  const { data, error, mutate } = useSWR('http://localhost:3095/api/users', fetcher);
   const [logInError, setLogInError] = useState(false);
   const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
@@ -22,7 +22,9 @@ const LogIn = () => {
             withCredentials: true,
           },
         )
-        .then((response) => {})
+        .then((response) => {
+          mutate(response.data, false); // Optimistic UI
+        })
         .catch((error) => {
           setLogInError(error.response?.data?.statusCode === 401);
         });
@@ -30,13 +32,13 @@ const LogIn = () => {
     [email, password],
   );
 
-  // if (data === undefined) {
-  //   return <div>로딩중...</div>;
-  // }
+  if (data === undefined) {
+    return <div>로딩중...</div>;
+  }
 
-  // if (data) {
-  //   return <Redirect to="/workspace/sleact/channel/일반" />;
-  // }
+  if (data) {
+    return <Redirect to="/workspace/channel" />;
+  }
 
   return (
     <div id="container">
