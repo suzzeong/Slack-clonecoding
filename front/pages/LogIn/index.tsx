@@ -37,12 +37,12 @@ const LogIn = () => {
   }
 
   if (data) {
-    return <Redirect to="/workspace/channel" />;
+    return <Redirect to="/workspace/sleact/channel/일반" />;
   }
 
   return (
     <div id="container">
-      <Header>Slack</Header>
+      <Header>Sleact</Header>
       <Form onSubmit={onSubmit}>
         <Label id="email-label">
           <span>이메일 주소</span>

@@ -38,7 +38,7 @@ const SignUp = () => {
         setSignUpError('');
         setSignUpSuccess(false);
         axios
-          .post('http://localhost:3090/api/users', {
+          .post('http://localhost:3095/api/users', {
             email,
             nickname,
             password,
@@ -62,12 +62,12 @@ const SignUp = () => {
   }
 
   if (data) {
-    return <Redirect to="/workspace/channel" />;
+    return <Redirect to="/workspace/sleact/channel/일반" />;
   }
 
   return (
     <div id="container">
-      <Header>Slack</Header>
+      <Header>Sleact</Header>
       <Form onSubmit={onSubmit}>
         <Label id="email-label">
           <span>이메일 주소</span>

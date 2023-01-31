@@ -20,9 +20,9 @@ import {
 } from '@layouts/Workspace/styles';
 import gravatar from 'gravatar';
 import loadable from '@loadable/component';
-import { Link, Redirect, Route, Switch } from 'react-router-dom';
+import { Link, Redirect, Route, Switch, useParams } from 'react-router-dom';
 import Menu from '@components/Menu';
-import { IUser } from '@typings/db';
+import { IChannel, IUser } from '@typings/db';
 import { Input, Label, Button } from '@pages/SignUp/styles';
 import useInput from '@hooks/useInput';
 import Modal from '@components/Modal';
@@ -40,7 +40,18 @@ const Workspace: VFC = () => {
   const [newWorkspace, onChangeNewWorkspace, setNewWorkspace] = useInput('');
   const [newUrl, onChangeNewUrl, setNewUrl] = useInput('');
 
-  const { data: userData, error, mutate } = useSWR<IUser | false>('http://localhost:3095/api/users', fetcher);
+  const { workspace } = useParams<{ workspace: string }>();
+
+  const {
+    data: userData,
+    error,
+    mutate,
+  } = useSWR<IUser | false>('http://localhost:3095/api/users', fetcher, { dedupingInterval: 2000 });
+
+  const { data: channelData } = useSWR<IChannel[]>(
+    userData ? `http://localhost:3095/api/workspaces/${workspace}/channels` : null,
+    fetcher,
+  );
 
   const onLogout = useCallback(() => {
     axios
@@ -68,8 +79,12 @@ const Workspace: VFC = () => {
   const onCreateWorkspace = useCallback(
     (e) => {
       e.preventDefault();
-      if (!newWorkspace || !newWorkspace.trim()) return;
-      if (!newUrl || !newUrl.trim()) return;
+      if (!newWorkspace || !newWorkspace.trim()) {
+        return;
+      }
+      if (!newUrl || !newUrl.trim()) {
+        return;
+      }
       axios
         .post(
           'http://localhost:3095/api/workspaces',
@@ -145,21 +160,24 @@ const Workspace: VFC = () => {
           <AddButton onClick={onClickCreateWorkspace}>+</AddButton>
         </Workspaces>
         <Channels>
-          <WorkspaceName onClick={toggleWorkspaceModal}>Slack</WorkspaceName>
+          <WorkspaceName onClick={toggleWorkspaceModal}>Sleact</WorkspaceName>
           <MenuScroll>
             <Menu show={showWorkspaceModal} onCloseModal={toggleWorkspaceModal} style={{ top: 95, left: 80 }}>
               <WorkspaceModal>
-                <h2>Slack</h2>
+                <h2>Sleact</h2>
                 <button onClick={onClickAddChannel}>채널 만들기</button>
                 <button onClick={onLogout}>로그아웃</button>
               </WorkspaceModal>
             </Menu>
+            {channelData?.map((v) => (
+              <div>{v.name}</div>
+            ))}
           </MenuScroll>
         </Channels>
         <Chats>
           <Switch>
-            <Route path="/workspace/channel" component={Channel} />
-            <Route path="/workspace/dm" component={DirectMessage} />
+            <Route path="/workspace/:workspace/channel/:channel" component={Channel} />
+            <Route path="/workspace/:workspace/dm/:id" component={DirectMessage} />
           </Switch>
         </Chats>
       </WorkspaceWrapper>
@@ -176,7 +194,11 @@ const Workspace: VFC = () => {
           <Button type="submit">생성하기</Button>
         </form>
       </Modal>
-      <CreateChannelModal show={showCreateChannelModal} onCloseModal={onCloseModal} />
+      <CreateChannelModal
+        show={showCreateChannelModal}
+        onCloseModal={onCloseModal}
+        setShowCreateChannelModal={setShowCreateChannelModal}
+      />
     </div>
   );
 };
