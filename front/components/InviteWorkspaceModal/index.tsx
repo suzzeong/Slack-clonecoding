@@ -19,10 +19,10 @@ const InviteWorkspaceModal: FC<Props> = ({ show, onCloseModal, setShowInviteWork
   const [newMember, onChangeNewMember, setNewMember] = useInput('');
   const { workspace } = useParams<{ workspace: string; channel: string }>();
 
-  const { data: userData, error, mutate } = useSWR<IUser | false>('http://localhost:3095/api/users', fetcher);
+  const { data: userData, error, mutate } = useSWR<IUser | false>('/api/users', fetcher);
 
   const {mutate: mutateChannel } = useSWR<IChannel[]>(
-    userData ? `http://localhost:3095/api/workspaces/${workspace}/channels` : null,
+    userData ? `/api/workspaces/${workspace}/channels` : null,
     fetcher,
   );
 
@@ -33,7 +33,7 @@ const InviteWorkspaceModal: FC<Props> = ({ show, onCloseModal, setShowInviteWork
     }
     axios
       .post(
-        `http://localhost:3095/api/workspaces/${workspace}/members`,
+        `/api/workspaces/${workspace}/members`,
         {
           name: newMember,
         },
