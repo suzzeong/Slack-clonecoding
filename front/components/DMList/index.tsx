@@ -8,12 +8,9 @@ import { useParams } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import useSWR from 'swr';
 
-interface Props {
-  userData?: IUser;
-}
-
-const DMList: FC<Props> = ({ userData }) => {
+const DMList: FC = () => {
   const { workspace } = useParams<{ workspace?: string }>();
+  const { data: userData, error, mutate } = useSWR<IUser>('/api/users', fetcher, { dedupingInterval: 2000 });
   const { data: memberData } = useSWR<IUserWithOnline[]>(
     userData ? `/api/workspaces/${workspace}/members` : null,
     fetcher,
@@ -27,14 +24,17 @@ const DMList: FC<Props> = ({ userData }) => {
     setChannelCollapse((prev) => !prev);
   }, []);
 
-  const resetCount = useCallback((id) => {
-    setCountList((list) => {
-      return {
-        ...list,
-        [id]: 0,
-      };
-    });
-  }, []);
+  const resetCount = useCallback(
+    (id) => () => {
+      setCountList((list) => {
+        return {
+          ...list,
+          [id]: 0,
+        };
+      });
+    },
+    [],
+  );
 
   const onMessage = (data: IDM) => {
     console.log('dm왔다', data);
@@ -84,7 +84,7 @@ const DMList: FC<Props> = ({ userData }) => {
                 key={member.id}
                 activeClassName="selected"
                 to={`/workspace/${workspace}/dm/${member.id}`}
-                onClick={()=>resetCount(member.id)}
+                onClick={resetCount(member.id)}
               >
                 <i
                   className={`c-icon p-channel_sidebar__presence_icon p-channel_sidebar__presence_icon--dim_enabled c-presence ${
