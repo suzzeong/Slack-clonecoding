@@ -4,7 +4,7 @@ import React from 'react';
 const ChatList = () => {
   return (
     <ChatZone>
-      <Section></Section>
+      <Section>section</Section>
     </ChatZone>
   );
 };
