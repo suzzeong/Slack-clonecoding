@@ -92,6 +92,7 @@ const config: Configuration = {
   },
 };
 
+// 서버모드
 if (isDevelopment && config.plugins) {
   config.plugins.push(new webpack.HotModuleReplacementPlugin());
   config.plugins.push(
@@ -101,8 +102,10 @@ if (isDevelopment && config.plugins) {
       },
     }),
   );
-  config.plugins.push(new BundleAnalyzerPlugin({ analyzerMode: 'server', openAnalyzer: false }));
+  config.plugins.push(new BundleAnalyzerPlugin({ analyzerMode: 'server', openAnalyzer: true }));
+  // openAnalyzer: false -> true
 }
+// 배포모드
 if (!isDevelopment && config.plugins) {
   config.plugins.push(new webpack.LoaderOptionsPlugin({ minimize: true }));
   config.plugins.push(new BundleAnalyzerPlugin({ analyzerMode: 'static' }));
