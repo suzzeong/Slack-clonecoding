@@ -55,6 +55,7 @@ const DirectMessage = () => {
           });
           return preChatData;
         }, false).then(() => {
+          localStorage.setItem(`${workspace}-${id}`, new Date().getTime().toString());
           setChat('');
           scrollbarRef.current?.scrollToBottom();
         });
@@ -92,7 +93,7 @@ const DirectMessage = () => {
       });
     }
   }, []);
-  
+
   useEffect(() => {
     socket?.on('dm', onMessage);
     return () => {
@@ -117,9 +118,18 @@ const DirectMessage = () => {
         formData.append('image', file);
       }
     }
-    axios.post(`/api/workspaces/${workspace}/dms/${id}/images`, formData).then(() => {});
-  }, []);
+    axios.post(`/api/workspaces/${workspace}/dms/${id}/images`, formData).then(() => {
+      setDragOver(false);
+      localStorage.setItem(`${workspace}-${id}`, new Date().getTime().toString());
+      mutateChat();
+    });
+  }, [workspace, id, mutateChat]);
 
+  useEffect(() => {
+    localStorage.setItem(`${workspace}-${id}`, new Date().getTime().toString());
+  }, [workspace, id]);
+
+  // Drag and Drop
   const onDrop = useCallback(
     (e) => {
       e.preventDefault();

@@ -58,6 +58,7 @@ const Channel = () => {
           });
           return preChatData;
         }, false).then(() => {
+          localStorage.setItem(`${workspace}-${channel}`, new Date().getTime().toString());
           setChat('');
           scrollbarRef.current?.scrollToBottom();
         });
@@ -133,6 +134,10 @@ const Channel = () => {
     axios.post(`/api/workspaces/${workspace}/channels/${channel}/images`, formData).then(() => {});
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem(`${workspace}-${channel}`, new Date().getTime().toString());
+  }, [workspace, channel]);
+
   // Drag and Drop
   const onDrop = useCallback(
     (e) => {
@@ -158,6 +163,7 @@ const Channel = () => {
       }
       axios.post(`/api/workspaces/${workspace}/channels/${channel}/images`, formData).then(() => {
         setDragOver(false);
+        localStorage.setItem(`${workspace}-${channel}`, new Date().getTime().toString());
       });
     },
     [workspace, channel],
