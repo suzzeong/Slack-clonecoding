@@ -51,14 +51,20 @@ export const Toolbox = styled.div`
   display: flex;
   border-top: 1px solid rgb(221, 221, 221);
   align-items: center;
+  justify-content: space-between;
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
+`;
+
+export const SendFile = styled.input`
+  position: absolute;
+  left: 5px;
 `;
 
 export const SendButton = styled.button`
   position: absolute;
   right: 5px;
-  top: 5px;
+  top: 3px;
 `;
 
 export const EachMention = styled.button<{ focus: boolean }>`

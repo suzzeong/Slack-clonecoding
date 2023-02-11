@@ -1,5 +1,13 @@
 import React, { VFC, useCallback, useEffect, useRef } from 'react';
-import { ChatArea, Form, MentionsTextarea, SendButton, Toolbox, EachMention } from '@components/ChatBox/styles';
+import {
+  ChatArea,
+  Form,
+  MentionsTextarea,
+  SendButton,
+  Toolbox,
+  EachMention,
+  SendFile,
+} from '@components/ChatBox/styles';
 import autosize from 'autosize';
 import { Mention, SuggestionDataItem } from 'react-mentions';
 import { useParams } from 'react-router-dom';
@@ -13,9 +21,10 @@ interface Props {
   onSubmitForm: (e: any) => void;
   onChangeChat: (e: any) => void;
   placeholder?: string;
+  onChangeFile: (e: any) => void;
 }
 
-const ChatBox: VFC<Props> = ({ chat, onSubmitForm, onChangeChat, placeholder }) => {
+const ChatBox: VFC<Props> = ({ chat, onSubmitForm, onChangeChat, placeholder, onChangeFile }) => {
   const { workspace } = useParams<{ workspace: string }>();
   const { data: userData, error, mutate } = useSWR<IUser | false>('/api/users', fetcher, { dedupingInterval: 2000 });
   const { data: memberData } = useSWR<IUser[]>(userData ? `/api/workspaces/${workspace}/members` : null, fetcher);
@@ -80,6 +89,7 @@ const ChatBox: VFC<Props> = ({ chat, onSubmitForm, onChangeChat, placeholder }) 
           />
         </MentionsTextarea>
         <Toolbox>
+          {/* <SendFile type="file" multiple onChange={onChangeFile} /> */}
           <SendButton
             className={
               'c-button-unstyled c-icon_button c-icon_button--light c-icon_button--size_medium c-texty_input__button c-texty_input__button--send' +

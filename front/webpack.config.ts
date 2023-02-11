@@ -102,7 +102,7 @@ if (isDevelopment && config.plugins) {
       },
     }),
   );
-  config.plugins.push(new BundleAnalyzerPlugin({ analyzerMode: 'server', openAnalyzer: true }));
+  config.plugins.push(new BundleAnalyzerPlugin({ analyzerMode: 'server', openAnalyzer: false }));
   // openAnalyzer: false -> true
 }
 // 배포모드
